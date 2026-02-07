@@ -61,7 +61,7 @@ cloud-segmentation/
 
 ```bash
 # Clone repository
-git clone https://github.com/YOUR_USERNAME/cloud-segmentation.git
+git clone https://github.com/SriVoruganti/cloud-segmentation.git
 cd cloud-segmentation
 
 # Create virtual environment
@@ -194,7 +194,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📧 Contact
 
 For questions or collaboration:
-- **Author**: Sri Voruganti
+- **Author**: Sri Satya Jayanth Voruganti
 - **Email**: satyajayanth.voruganti@gmail.com
 - **Institution**: UNSW Sydney
 
