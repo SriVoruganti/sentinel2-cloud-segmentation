@@ -171,7 +171,7 @@ If you use this code in your research, please cite:
 
 ```bibtex
 @misc{cloud-segmentation-2026,
-  author = {Your Name},
+  author = {Sri Satya Jayanth Voruganti},
   title = {Cloud Segmentation from Sentinel-2 Satellite Imagery},
   year = {2026},
   publisher = {GitHub},
@@ -194,8 +194,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📧 Contact
 
 For questions or collaboration:
-- **Author**: Your Name
-- **Email**: your.email@example.com
+- **Author**: Sri Voruganti
+- **Email**: satyajayanth.voruganti@gmail.com
 - **Institution**: UNSW Sydney
 
 ## 🔮 Future Work
