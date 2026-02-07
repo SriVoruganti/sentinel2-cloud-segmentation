@@ -175,7 +175,7 @@ If you use this code in your research, please cite:
   title = {Cloud Segmentation from Sentinel-2 Satellite Imagery},
   year = {2026},
   publisher = {GitHub},
-  url = {https://github.com/YOUR_USERNAME/cloud-segmentation}
+  url = {https://github.com/SriVoruganti/cloud-segmentation}
 }
 ```
 
