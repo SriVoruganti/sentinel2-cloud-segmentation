@@ -1,0 +1,68 @@
+#!/bin/bash
+#PBS -N cloud_evaluate
+#PBS -l select=1:ncpus=4:mem=16gb:ngpus=1
+#PBS -l walltime=1:00:00
+#PBS -j oe
+
+echo "=========================================="
+echo "Cloud Segmentation Model Evaluation"
+echo "=========================================="
+echo "Job ID: $PBS_JOBID"
+echo "Running on: $(hostname)"
+echo "Started at: $(date)"
+echo ""
+
+# Load modules
+module load python/3.10.8
+module load cuda/11.8.0
+module load cudnn/8.6.0.163-11.8
+echo "✓ Modules loaded"
+echo ""
+
+# Activate environment
+cd /srv/scratch/z5457565/cloud_segmentation
+source venv/bin/activate
+echo "✓ Virtual environment activated"
+echo ""
+
+# Paths
+MODEL_PATH="/srv/scratch/z5457565/cloud_segmentation/models/unet_20260204_123942/checkpoint_best.pth"
+DATA_DIR="/srv/scratch/z5457565/cloud_segmentation/data/dataset"
+OUTPUT_DIR="/srv/scratch/z5457565/cloud_segmentation/results/evaluation_$(date +%Y%m%d_%H%M%S)"
+CODE_DIR="/home/z5457565/cloud_segmentation/code"
+
+mkdir -p $OUTPUT_DIR
+
+echo "Model: $MODEL_PATH"
+echo "Data: $DATA_DIR"
+echo "Output: $OUTPUT_DIR"
+echo ""
+
+# Check GPU
+echo "GPU Check:"
+nvidia-smi
+echo ""
+
+# Run evaluation
+echo "Starting evaluation..."
+python $CODE_DIR/evaluation/evaluate.py \
+    --model_path $MODEL_PATH \
+    --data_dir $DATA_DIR \
+    --output_dir $OUTPUT_DIR \
+    --use_gpu
+
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "✓ Evaluation complete!"
+    echo ""
+    echo "Results:"
+    ls -lh $OUTPUT_DIR
+    echo ""
+    cat $OUTPUT_DIR/test_results.json
+else
+    echo "✗ Evaluation failed!"
+    exit 1
+fi
+
+echo ""
+echo "Finished: $(date)"

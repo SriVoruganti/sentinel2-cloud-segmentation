@@ -1,0 +1,72 @@
+#!/bin/bash
+#PBS -N cloud_unet_train
+#PBS -l select=1:ncpus=8:mem=64gb:ngpus=1
+#PBS -l walltime=12:00:00
+#PBS -j oe
+
+echo "=========================================="
+echo "Cloud Segmentation Model Training"
+echo "=========================================="
+echo "Job ID: $PBS_JOBID"
+echo "Running on: $(hostname)"
+echo "Started at: $(date)"
+echo ""
+
+# Load modules
+module load python/3.10.8
+module load cuda/11.8.0
+module load cudnn/8.6.0.163-11.8
+echo "✓ Modules loaded"
+echo ""
+
+# Activate environment
+cd /srv/scratch/z5457565/cloud_segmentation
+source venv/bin/activate
+echo "✓ Virtual environment activated"
+echo ""
+
+# Paths
+DATA_DIR="/srv/scratch/z5457565/cloud_segmentation/data/dataset"
+OUTPUT_DIR="/srv/scratch/z5457565/cloud_segmentation/models/unet_$(date +%Y%m%d_%H%M%S)"
+CODE_DIR="/home/z5457565/cloud_segmentation/code"
+
+mkdir -p $OUTPUT_DIR
+
+echo "Data: $DATA_DIR"
+echo "Output: $OUTPUT_DIR"
+echo ""
+
+# Check GPU
+echo "GPU Check:"
+nvidia-smi
+echo ""
+
+# Train
+echo "Starting training..."
+python $CODE_DIR/training/train.py \
+    --data_dir $DATA_DIR \
+    --output_dir $OUTPUT_DIR \
+    --encoder resnet34 \
+    --encoder_weights imagenet \
+    --in_channels 6 \
+    --batch_size 16 \
+    --epochs 100 \
+    --learning_rate 0.001 \
+    --weight_decay 1e-4 \
+    --num_workers 8 \
+    --loss_type combined \
+    --scheduler cosine \
+    --early_stopping \
+    --early_stopping_patience 15 \
+    --use_gpu \
+    --seed 42
+
+if [ $? -eq 0 ]; then
+    echo "✓ Training complete!"
+    ls -lh $OUTPUT_DIR
+else
+    echo "✗ Training failed!"
+    exit 1
+fi
+
+echo "Finished: $(date)"
